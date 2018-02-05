@@ -26,3 +26,13 @@ Python Microbit opdrachten. Gemaakt o.b.v. de "programmer" opdrachtenserie van [
 7. Radio
    1. RadioLED
    2. Speurneus
+
+## Planning
+* volledig format voor alle opdrachten
+  + titel
+  + leerdoel
+  + doel
+  + code
+  + opdrachten (mogelijke MC-antwoorden)
+* simulator (o.b.v. [createwithcode](https://create.withcode.uk/) )
+* vertaling van (gedeeltelijke) [microbit python API](http://microbit-micropython.readthedocs.io/en/latest/microbit_micropython_api.html)
