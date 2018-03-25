@@ -131,7 +131,8 @@ while True:
     get_message()
 
     # check if button A and B were pressed
-    # handles later?, use get_presses?
+    #  bug: button_X.was_pressed() does not trigger on pin-pulldown, 
+    #       function gets called in radio handler
     if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
     #if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
         functie_AB()
