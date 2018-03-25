@@ -89,6 +89,8 @@ def handleRadio(incoming):
                     #microbit.pin5.write_digital(1)
                     #microbit.pin11.write_digital(1)
                     functie_AB()
+                else:
+                    microbit.display.scroll("ll:"+str(nummerKnopje))
             else:
                 microbit.display.scroll("ll:"+str(nummerLeerling))
         else:
