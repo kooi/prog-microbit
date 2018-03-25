@@ -29,10 +29,11 @@ Python Microbit opdrachten. Gemaakt o.b.v. de "programmer" opdrachtenserie van [
 
 ## Planning
 * volledig format voor alle opdrachten
+  + nummer
   + titel
-  + leerdoel
   + doel
-  + code
+  + procedure
   + opdrachten (mogelijke MC-antwoorden)
+  + materialen
 * simulator (o.b.v. [createwithcode](https://create.withcode.uk/) )
 * vertaling van (gedeeltelijke) [microbit python API](http://microbit-micropython.readthedocs.io/en/latest/microbit_micropython_api.html)
