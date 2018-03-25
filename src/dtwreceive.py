@@ -25,7 +25,6 @@ def functie_A():
                         '00000:' ) )
     microbit.sleep(200)
     microbit.display.clear()
-#    handleRadio("1")
     # tot hier
 
     
