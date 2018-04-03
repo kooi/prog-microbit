@@ -1,6 +1,5 @@
 import microbit
 import radio
-import math
 
 #constants
 mijnReserve  = 0
@@ -25,6 +24,7 @@ def functie_A():
                         '00000:' ) )
     microbit.sleep(200)
     microbit.display.clear()
+#    handleRadio("1")
     # tot hier
 
     
@@ -58,6 +58,15 @@ def functie_AB():
 ############################################
 
 def handleRadio(incoming):
+#    microbit.display.set_pixel(0,0,9)
+#    sleep(5)
+#    microbit.display.set_pixel(0,0,0)
+    
+#    microbit.display.scroll(incoming)
+#    microbit.display.scroll(incoming, wait=False)
+#    microbit.sleep(100)
+    # parse as integer?
+    print(incoming)
     receivedNumber = int(incoming)
     nummerOntvangen = receivedNumber
     nummerKnopje    = nummerOntvangen / 1000000
@@ -98,28 +107,31 @@ def get_message():
         try:
             msg = radio.receive_bytes()
             if msg is not None:
+                if len(msg)
+                return str(msg[13:],'utf-8')
+#                print(len(msg))
+#                if len(msg) >= 13 and msg[3] == 2:
+#                    lstr = msg[12] # length byte
+#                    text = str(msg[13:13+lstr], 'ascii')
+#                return text
 
-                if msg[0] == 01 and msg[1] == 00 and msg[2] == 01: #DAL-packet
-                    if msg[3] == 0:
-                        payload = 0
-                        for i in range(len(msg[12:])):
-                            payload += msg[12+i] * math.pow(256, i)
-                        handleRadio(payload)
-#                        microbit.display.scroll( str(int(payload)) )
-                else:
-                    line = "MSG:"
-                    for b in msg:
-                        line += str.format("%02X " % b)
-                    microbit.display.scroll(line)
-
-        except Exception as e:
-            # reset the radio if it crashes
-            microbit.display.scroll("  RESET:%s" % str(e))
+        except Exception as e: # reset radio on error
             radio.off()
             radio.on()
 
+
 while True:
-    get_message()
+    # Read any incoming messages
+    # radio does not receive when looping?
+#    incoming = radio.receive()
+#    if incoming is not None:
+#        microbit.display.set_pixel(0,0,9)
+#        handleRadio(incoming)
+
+#    incoming2 = radio.receive_bytes()
+#    if incoming2 is not None:
+#        microbit.display.set_pixel(0,4,9)
+#        handleRadio(incoming)
 
     # check if button A and B were pressed
     # handles later?, use get_presses?
@@ -136,3 +148,4 @@ while True:
     # (handles later?)
     elif microbit.button_b.was_pressed():
         functie_B()
+

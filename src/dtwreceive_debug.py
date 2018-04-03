@@ -58,15 +58,16 @@ def functie_AB():
 ############################################
 
 def handleRadio(incoming):
+    microbit.display.scroll( str(incoming) )
     receivedNumber = int(incoming)
     nummerOntvangen = receivedNumber
-    nummerKnopje    = nummerOntvangen / 1000000
-    nummerOntvangen = nummerOntvangen - nummerKnopje * 1000000
-    nummerReserve   = nummerOntvangen / 100000
-    nummerOntvangen = nummerOntvangen - nummerReserve* 100000
-    nummerSchool    = nummerOntvangen / 100
-    nummerOntvangen = nummerOntvangen - nummerSchool * 1000
-    nummerLeerling  = nummerOntvangen
+    nummerKnopje    = int(nummerOntvangen / 1000000)
+    nummerOntvangen = int(nummerOntvangen - nummerKnopje * 1000000)
+    nummerReserve   = int(nummerOntvangen / 100000)
+    nummerOntvangen = int(nummerOntvangen - nummerReserve* 100000)
+    nummerSchool    = int(nummerOntvangen / 1000)
+    nummerOntvangen = int(nummerOntvangen - nummerSchool * 1000)
+    nummerLeerling  = int(nummerOntvangen)
 
     if nummerReserve  == mijnReserve  or nummerReserve  == 0 :
         if nummerSchool   == mijnSchool   or nummerSchool   == 0:
@@ -81,14 +82,22 @@ def handleRadio(incoming):
                     #microbit.sleep(50)
                     #microbit.pin11.write_digital(1)
                     functie_B()
-                else:
+                elif nummerKnopje == 3:
                     #microbit.pin5.write_digital(0)
                     #microbit.pin11.write_digital(0)
                     #microbit.sleep(50)
                     #microbit.pin5.write_digital(1)
                     #microbit.pin11.write_digital(1)
                     functie_AB()
-
+                else:
+                    microbit.display.scroll("ll:"+str(nummerKnopje))
+            else:
+                microbit.display.scroll("ll:"+str(nummerLeerling))
+        else:
+            microbit.display.scroll("s:"+str(nummerSchool))
+    else:
+        microbit.display.scroll("r:"+str(nummerReserve))
+    
 ##################
 ### Event loop ###
 ##################
@@ -104,7 +113,7 @@ def get_message():
                         payload = 0
                         for i in range(len(msg[12:])):
                             payload += msg[12+i] * math.pow(256, i)
-                        handleRadio(payload)
+                        handleRadio( int(payload) )
 #                        microbit.display.scroll( str(int(payload)) )
                 else:
                     line = "MSG:"
@@ -122,7 +131,8 @@ while True:
     get_message()
 
     # check if button A and B were pressed
-    # handles later?, use get_presses?
+    #  bug: button_X.was_pressed() does not trigger on pin-pulldown, 
+    #       function gets called in radio handler
     if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
     #if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
         functie_AB()
