@@ -1,16 +1,14 @@
-from microbit import *
-
 import microbit
 import radio
-import math
+#import math
 import random
 import music
 
 
 # constants
 mijnReserve = 0
-mijnSchool = 22
-mijnLeerling = 120
+mijnSchool = 20
+mijnLeerling = 25
 
 # setup
 radio.config(group=1)
@@ -20,92 +18,28 @@ radio.on()
 ##### vanaf hier mag je stukjes code aanpassen #####
 ####################################################
 
-bom0 = Image("00000:"
-             "00000:"
-             "09990:"
-             "09990:"
-             "00900:")
+#bom1 = microbit.Image("00000:"
+#             "09990:"
+#             "99999:"
+#             "90909:"
+#             "00900:")
 
-bom1 = Image("00000:"
-             "09990:"
-             "99999:"
-             "90909:"
-             "00900:")
-
-bom2 = Image("09990:"
-             "99999:"
-             "90909:"
-             "90909:"
-             "00900:")
-
-anim = [bom0, bom1, bom2]
 
 
 def functie_Toon_Led():
     RandomGetal = random.randint(1, 3)
 
     if RandomGetal == 1:
-        pin1.write_analog(0)
-        pin2.write_analog(255)
+        microbit.pin1.write_analog(0)
+        microbit.pin2.write_analog(255)
 
     if RandomGetal == 2:
-        pin1.write_analog(255)
-        pin2.write_analog(255)
+        microbit.pin1.write_analog(255)
+        microbit.pin2.write_analog(255)
 
     if RandomGetal == 3:
-        pin1.write_analog(255)
-        pin2.write_analog(0)
-
-
-def functie_A():
-    for i in range(20):
-
-        functie_Toon_Led()
-
-        sleep(250)
-
-        pin1.write_analog(0)
-        pin2.write_analog(0)
-
-        sleep(250)
-
-    microbit.sleep(1000)
-    microbit.display.clear()
-
-
-def functie_B():
-    Aftelgetal = 9
-    for i in range(9):
-
-        display.show(str(Aftelgetal))
-
-        functie_Toon_Led()
-
-        sleep(250)
-
-        pin1.write_analog(0)
-        pin2.write_analog(0)
-
-        sleep(250)
-
-        functie_Toon_Led()
-
-        sleep(250)
-
-        pin1.write_analog(0)
-        pin2.write_analog(0)
-
-        sleep(250)
-
-        Aftelgetal = Aftelgetal - 1
-
-    for i in anim:
-        display.show(i)
-        sleep(300)
-
-    microbit.sleep(1000)
-    microbit.display.clear()
-
+        microbit.pin1.write_analog(255)
+        microbit.pin2.write_analog(0)
 
 def functie_AB():
     Aftelgetal = 9
@@ -113,7 +47,7 @@ def functie_AB():
 
     for i in range(9):
 
-        display.show(str(Aftelgetal))
+        microbit.display.show(str(Aftelgetal))
         functie_Toon_Led()
 
         if Aftelgetal == 1:
@@ -122,8 +56,8 @@ def functie_AB():
         else:
             music.play('c7:8')
 
-        pin1.write_analog(0)
-        pin2.write_analog(0)
+        microbit.pin1.write_analog(0)
+        microbit.pin2.write_analog(0)
 
         if Aftelgetal > 3:
             music.play('r7:8')
@@ -143,8 +77,8 @@ def functie_AB():
         else:
             music.play('c7:8')
 
-        pin1.write_analog(0)
-        pin2.write_analog(0)
+        microbit.pin1.write_analog(0)
+        microbit.pin2.write_analog(0)
 
         if Aftelgetal > 3:
             music.play('r7:8')
@@ -159,9 +93,7 @@ def functie_AB():
         if Aftelgetal == 0:
             music.play('c7:32')
 
-    for i in anim:
-        display.show(i)
-        sleep(300)
+#    microbit.display.show(bom1)
 
     microbit.sleep(1000)
     microbit.display.clear()
@@ -172,15 +104,15 @@ def functie_AB():
 ############################################
 
 def handleRadio(incoming):
-    receivedNumber = int(incoming)
+    receivedNumber = float(incoming)
     nummerOntvangen = receivedNumber
-    nummerKnopje    = nummerOntvangen / 1000000
+    nummerKnopje    = int(nummerOntvangen / 1000000)
     nummerOntvangen = nummerOntvangen - nummerKnopje * 1000000
-    nummerReserve   = nummerOntvangen / 100000
+    nummerReserve   = int(nummerOntvangen / 100000)
     nummerOntvangen = nummerOntvangen - nummerReserve* 100000
-    nummerSchool    = nummerOntvangen / 1000
+    nummerSchool    = int(nummerOntvangen / 1000)
     nummerOntvangen = nummerOntvangen - nummerSchool * 1000
-    nummerLeerling  = nummerOntvangen
+    nummerLeerling  = int(nummerOntvangen)
 
     if nummerReserve  == mijnReserve  or nummerReserve  == 0 :
         if nummerSchool   == mijnSchool   or nummerSchool   == 0:
@@ -189,12 +121,12 @@ def handleRadio(incoming):
                     #microbit.pin5.write_digital(0)
                     #microbit.sleep(50)
                     #microbit.pin5.write_digital(1)
-                    functie_A()
+                    functie_AB()
                 elif nummerKnopje == 2:
                     #microbit.pin11.write_digital(0)
                     #microbit.sleep(50)
                     #microbit.pin11.write_digital(1)
-                    functie_B()
+                    functie_AB()
                 else:
                     #microbit.pin5.write_digital(0)
                     #microbit.pin11.write_digital(0)
@@ -208,12 +140,13 @@ def get_message():
     try:
         msg = radio.receive_bytes()
         if msg is not None:
-            if msg[0] == 01 and msg[1] == 00 and msg[2] == 01:
+            if int(msg[0]) == 01 and int(msg[1]) == 00 and int(msg[2]) == 01:
                 packet_type = msg[3]
                 if packet_type == 0:
                     payload = 0
                     for i in range(len(msg[12:])):
                         payload += msg[12+i] * math.pow(256, i)
+                    handleRadio(payload)
     except Exception as e:
         radio.off()
         radio.on()
@@ -222,17 +155,9 @@ def get_message():
 while True:
     get_message()
 
-#    if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
-#        functie_AB()
-#    elif microbit.button_a.was_pressed():
-#        functie_A()
-#    elif microbit.button_b.was_pressed():
-#        functie_B()
-
-    if button_a.is_pressed() and button_b.is_pressed():
+    if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
         functie_AB()
-    elif button_a.is_pressed():
-        functie_A()
-    elif button_b.is_pressed():
-        functie_B()
-    sleep(100)
+    elif microbit.button_a.get_presses() > 0:
+        functie_AB()
+    elif microbit.button_b.get_presses() > 0:
+        functie_AB()

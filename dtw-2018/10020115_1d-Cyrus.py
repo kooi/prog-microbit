@@ -4,8 +4,8 @@ import math
 
 #constants
 mijnReserve  = 0
-mijnSchool   = 22
-mijnLeerling = 120
+mijnSchool   = 20
+mijnLeerling = 115
 
 #setup
 radio.config(group=1)
@@ -15,45 +15,39 @@ radio.on()
 ##### vanaf hier mag je stukjes code aanpassen #####
 ####################################################
 
-def bcd2dec(bcd):
-    return (((bcd & 0xf0) >> 4) * 10 + (bcd & 0x0f))
+clocks = [microbit.Image.CLOCK1,
+          microbit.Image.CLOCK2,
+          microbit.Image.CLOCK3,
+          microbit.Image.CLOCK4,
+          microbit.Image.CLOCK5,
+          microbit.Image.CLOCK6,
+          microbit.Image.CLOCK7,
+          microbit.Image.CLOCK8,
+          microbit.Image.CLOCK9,
+          microbit.Image.CLOCK10,
+          microbit.Image.CLOCK11,
+          microbit.Image.CLOCK12]
 
-def dec2bcd(dec):
-    tens, units = divmod(dec, 10)
-    return (tens << 4) + units
-    
-def get_time():
-    i2c.write(addr, b'\x00', repeat=False)
-    buf = i2c.read(addr, 7, repeat=False)
-    ss = bcd2dec(buf[0])
-    mm = bcd2dec(buf[1])
-    if buf[2] & 0x40:
-        hh = bcd2dec(buf[2] & 0x1f)
-        if buf[2] & 0x20:
-            hh += 12
-    else:
-        hh = bcd2dec(buf[2])
-    wday = buf[3]
-    DD = bcd2dec(buf[4])
-    MM = bcd2dec(buf[5] & 0x1f)
-    YY = bcd2dec(buf[6])+2000
-    return [hh,mm,ss,YY,MM,DD,wday]
+def functie_A():
+    # deze code mag je veranderen
+    microbit.display.show(clocks)
+    microbit.display.clear()
+    # tot hier
 
-    
-addr = 0x68
-buf = bytearray(7)
-    
-while True:
-    if microbit.button_a.is_pressed():
-        tm = get_time()
-        str_time = '{0:02d}'.format(tm[0]) + ":" + '{0:02d}'.format(tm[1]) + ":" + '{0:02d}'.format(tm[2])
-        microbit.display.scroll(str_time)
-    elif microbit.button_b.is_pressed():
-        tm = get_time()
-        str_time = '{0:02d}'.format(tm[5]) + "/" + '{0:02d}'.format(tm[4]) + "/" + '{0:04d}'.format(tm[3])
-        microbit.display.scroll(str_time)
-    else:
-        microbit.display.clear()
+
+def functie_B():
+    # deze code mag je veranderen
+    microbit.display.show(clocks,delay=100)
+    microbit.display.clear()
+    # tot hier
+
+
+def functie_AB():
+    # deze code mag je veranderen
+    for i in range(10):
+        microbit.display.show(clocks,delay=30)
+    microbit.display.clear()
+    # tot hier
               
     
 ############################################
@@ -61,15 +55,15 @@ while True:
 ############################################
 
 def handleRadio(incoming):
-    receivedNumber = int(incoming)
+    receivedNumber = float(incoming)
     nummerOntvangen = receivedNumber
-    nummerKnopje    = nummerOntvangen / 1000000
+    nummerKnopje    = int(nummerOntvangen / 1000000)
     nummerOntvangen = nummerOntvangen - nummerKnopje * 1000000
-    nummerReserve   = nummerOntvangen / 100000
+    nummerReserve   = int(nummerOntvangen / 100000)
     nummerOntvangen = nummerOntvangen - nummerReserve* 100000
-    nummerSchool    = nummerOntvangen / 1000
+    nummerSchool    = int(nummerOntvangen / 1000)
     nummerOntvangen = nummerOntvangen - nummerSchool * 1000
-    nummerLeerling  = nummerOntvangen
+    nummerLeerling  = int(nummerOntvangen)
 
     if nummerReserve  == mijnReserve  or nummerReserve  == 0 :
         if nummerSchool   == mijnSchool   or nummerSchool   == 0:
@@ -97,12 +91,13 @@ def get_message():
     try:
         msg = radio.receive_bytes()
         if msg is not None:
-            if msg[0] == 01 and msg[1] == 00 and msg[2] == 01:
+            if int(msg[0]) == 01 and int(msg[1]) == 00 and int(msg[2]) == 01:
                 packet_type = msg[3]
                 if packet_type == 0:
                     payload = 0
                     for i in range(len(msg[12:])):
                         payload += msg[12+i] * math.pow(256, i)
+                    handleRadio(payload)
     except Exception as e:
         radio.off()
         radio.on()
@@ -113,7 +108,7 @@ while True:
 
     if microbit.button_a.was_pressed() and microbit.button_b.was_pressed():
         functie_AB()
-    elif microbit.button_a.was_pressed():
+    elif microbit.button_a.get_presses() > 0:
         functie_A()
-    elif microbit.button_b.was_pressed():
+    elif microbit.button_b.get_presses() > 0:
         functie_B()
