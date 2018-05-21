@@ -2,11 +2,12 @@ import microbit
 import radio
 import math
 import music
+import random
 
 #constants
 mijnReserve  = 0
 mijnSchool   = 20
-mijnLeerling = 87
+mijnLeerling = 149
 
 #setup
 radio.config(group=1)
@@ -18,25 +19,51 @@ radio.on()
 
 def functie_A():
     # deze code mag je veranderen
-    microbit.display.show( microbit.Image.ARROW_NE )
-    microbit.pin2.write_analog(30)
-    microbit.sleep(200)
+    music.play(music.PYTHON,wait=False)
+    for j in range(22):
+        for i in range(12):
+            microbit.display.set_pixel(random.randint(0,4), random.randint(0,4),9)
+            microbit.sleep(50)
+        microbit.display.clear()
+    microbit.sleep(1000)
+    microbit.display.clear()
     # tot hier
 
 
 def functie_B():
     # deze code mag je veranderen
-    microbit.display.show( microbit.Image.ARROW_NW )
-    microbit.pin2.write_analog(90)
-    microbit.sleep(200)
+    music.play(music.NYAN,wait=False)
+    for j in range(13):
+        for i in range(10):
+            microbit.display.set_pixel(random.randint(0,4), random.randint(0,4),i)
+            microbit.sleep(50)
+    microbit.sleep(1000)
+    microbit.pin2.write_analog(30)
+    microbit.display.clear()
     # tot hier
 
 
 def functie_AB():
     # deze code mag je veranderen
-    microbit.display.show( microbit.Image.ARROW_N )
-    microbit.pin2.write_analog(60)
-    microbit.sleep(200)
+    music.play(music.FUNERAL,wait=False)
+    x = 2
+    y = 2
+    for i in range(100):
+        microbit.display.set_pixel(x, y, 1)
+        x = x + random.randint(-1,1)
+        y = y + random.randint(-1,1)
+        if x > 4:
+            x = 0
+        if x < 0:
+            x = 4
+        if y > 4:
+            y = 0
+        if y < 0:
+            y = 4
+        microbit.display.set_pixel(x, y, 9)
+        microbit.sleep(50)
+    microbit.sleep(1000)
+    microbit.display.clear()
     # tot hier
 
 
